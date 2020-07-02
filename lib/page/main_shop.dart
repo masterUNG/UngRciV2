@@ -22,6 +22,8 @@ class _MainShopState extends State<MainShop> {
         children: <Widget>[
           UserAccountsDrawerHeader(accountName: null, accountEmail: null),
           menuMyOrder(),
+          menuMyProduct(),
+          menuMyInformation(),
         ],
       ),
     );
@@ -35,4 +37,24 @@ class _MainShopState extends State<MainShop> {
           Navigator.pop(context);
         },
       );
+
+      ListTile menuMyProduct() => ListTile(
+        leading: Icon(Icons.looks_two),
+        title: Text('Show My Product'),
+        subtitle: Text('ดูรายการสินค้า'),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      );
+
+      ListTile menuMyInformation() => ListTile(
+        leading: Icon(Icons.looks_3),
+        title: Text('Show My Informaion'),
+        subtitle: Text('ดูรายละเอียดร้าน'),
+        onTap: () {
+          Navigator.pop(context);
+        },
+      );
+
+      
 }
