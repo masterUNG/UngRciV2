@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/widget/show_info_shop.dart';
 import 'package:ungrci/widget/show_my_order_shop.dart';
 import 'package:ungrci/widget/show_my_product.dart';
@@ -10,13 +11,29 @@ class MainShop extends StatefulWidget {
 
 class _MainShopState extends State<MainShop> {
   Widget currentWidget = ShowMyOrderShop();
+  String idShop, nameShop;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    findShop();
+  }
+
+  Future<Null> findShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      idShop = preferences.getString('id');
+      nameShop = preferences.getString('Name');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: showDrawer(),
       appBar: AppBar(
-        title: Text('Wellcome Shop'),
+        title: Text(nameShop == null ? 'Wellcome Shop' : 'ร้าน $nameShop' ),
       ),
       body: currentWidget,
     );
@@ -66,7 +83,7 @@ class _MainShopState extends State<MainShop> {
         onTap: () {
           Navigator.pop(context);
           setState(() {
-            currentWidget = ShowInfoShop();
+            currentWidget = ShowInfoShop(idShop: idShop,);
           });
         },
       );

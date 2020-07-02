@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/user_model.dart';
 import 'package:ungrci/page/main_shop.dart';
 import 'package:ungrci/page/main_user.dart';
@@ -99,10 +100,10 @@ class _AuthenState extends State<Authen> {
       if (password == model.password) {
         switch (model.type) {
           case 'User':
-            routeTo(MainUser());
+            routeTo(MainUser(), model);
             break;
           case 'Shop':
-            routeTo(MainShop());
+            routeTo(MainShop(), model);
             break;
           default:
         }
@@ -112,7 +113,12 @@ class _AuthenState extends State<Authen> {
     }
   }
 
-  void routeTo(Widget widget) {
+  Future<Null> routeTo(Widget widget, UserModel model) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('id', model.id);
+    preferences.setString('Name', model.name);
+    preferences.setString('Type', model.type);
+
     MaterialPageRoute route = MaterialPageRoute(
       builder: (context) => widget,
     );
