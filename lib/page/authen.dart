@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ungrci/models/user_model.dart';
+import 'package:ungrci/page/main_shop.dart';
+import 'package:ungrci/page/main_user.dart';
 import 'package:ungrci/page/register.dart';
 import 'package:ungrci/utility/my_api.dart';
 import 'package:ungrci/utility/my_style.dart';
@@ -46,50 +48,74 @@ class _AuthenState extends State<Authen> {
             normalDialog(context, 'กรุณากรอก ทุกช่อง คะ');
           } else {
             checkAuthen();
-                      }
-                    },
-                    child: Text('Login'),
-                  ),
-                );
-              }
-            
-              Container registerButton() {
-                return Container(
-                  width: 250,
-                  child: FlatButton(
-                    onPressed: () {
-                      MaterialPageRoute route = MaterialPageRoute(
-                        builder: (context) => Register(),
-                      );
-                      Navigator.push(context, route);
-                    },
-                    child: Text(
-                      'New Register',
-                      style: TextStyle(color: Colors.pink),
-                    ),
-                  ),
-                );
-              }
-            
-              Widget userForm() => Container(
-                    margin: EdgeInsets.only(top: 16),
-                    width: 250,
-                    child: TextField(
-                      onChanged: (value) => user = value.trim(),
-                      decoration: MyStyle().myInputDecoration('User :'),
-                    ),
-                  );
-            
-              Widget passwordForm() => Container(
-                    margin: EdgeInsets.only(top: 16),
-                    width: 250,
-                    child: TextField(
-                      onChanged: (value) => password = value.trim(),
-                      decoration: MyStyle().myInputDecoration('Password :'),
-                    ),
-                  );
-            
-              Future<Null> checkAuthen()async {
-                UserModel model = await  MyAPI().getUserWhereUser(user);
-              }
+          }
+        },
+        child: Text('Login'),
+      ),
+    );
+  }
+
+  Container registerButton() {
+    return Container(
+      width: 250,
+      child: FlatButton(
+        onPressed: () {
+          MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => Register(),
+          );
+          Navigator.push(context, route);
+        },
+        child: Text(
+          'New Register',
+          style: TextStyle(color: Colors.pink),
+        ),
+      ),
+    );
+  }
+
+  Widget userForm() => Container(
+        margin: EdgeInsets.only(top: 16),
+        width: 250,
+        child: TextField(
+          onChanged: (value) => user = value.trim(),
+          decoration: MyStyle().myInputDecoration('User :'),
+        ),
+      );
+
+  Widget passwordForm() => Container(
+        margin: EdgeInsets.only(top: 16),
+        width: 250,
+        child: TextField(
+          onChanged: (value) => password = value.trim(),
+          decoration: MyStyle().myInputDecoration('Password :'),
+        ),
+      );
+
+  Future<Null> checkAuthen() async {
+    UserModel model = await MyAPI().getUserWhereUser(user);
+    if (model == null) {
+      normalDialog(context, 'ไม่มี $user คนนี้ใน ฐานข้อมูล');
+    } else {
+      if (password == model.password) {
+        switch (model.type) {
+          case 'User':
+            routeTo(MainUser());
+            break;
+          case 'Shop':
+            routeTo(MainShop());
+            break;
+          default:
+        }
+      } else {
+        normalDialog(context, 'Password False');
+      }
+    }
+  }
+
+  void routeTo(Widget widget) {
+    MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => widget,
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
 }
