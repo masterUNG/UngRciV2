@@ -15,11 +15,21 @@ class Authen extends StatefulWidget {
 
 class _AuthenState extends State<Authen> {
   String user, password;
+  bool status = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    findLogin();
+  }
+
+  Future<Null> findLogin() async {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: status ? MyStyle().showProgress() : Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -33,7 +43,7 @@ class _AuthenState extends State<Authen> {
             ],
           ),
         ),
-      ),
+      ) ,
     );
   }
 
