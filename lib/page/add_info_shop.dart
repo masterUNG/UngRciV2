@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/utility/normal_dialog.dart';
 
 class AddInfoShop extends StatefulWidget {
   @override
@@ -8,7 +9,7 @@ class AddInfoShop extends StatefulWidget {
 }
 
 class _AddInfoShopState extends State<AddInfoShop> {
-  String dateTimeString, gender, educateString;
+  String dateTimeString, gender, educateString, address, phone;
   List<String> educates = [
     'ต่ำกว่า ป.6',
     'มัธยมต้น',
@@ -35,7 +36,23 @@ class _AddInfoShopState extends State<AddInfoShop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: null),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (address == null ||
+              address.isEmpty ||
+              phone == null ||
+              phone.isEmpty) {
+            normalDialog(context, 'กรุณากรอก ที่อยู่ และ เบอร์โทร ด้วยคะ');
+          } else if (gender == null) {
+            normalDialog(context, 'กรุณาเลือก Gendle');
+          } else if (educateString == null) {
+            normalDialog(context, 'Please Choose Education');
+          } else {
+            
+          }
+        },
+        child: Icon(Icons.cloud_upload),
+      ),
       appBar: AppBar(
         title: Text('เพิ่มข้อมูล ร้านค้า'),
       ),
@@ -133,6 +150,7 @@ class _AddInfoShopState extends State<AddInfoShop> {
         margin: EdgeInsets.only(top: 16),
         width: 250,
         child: TextField(
+          onChanged: (value) => address = value.trim(),
           decoration: MyStyle().myInputDecoration('ที่อยู่ :'),
         ),
       );
@@ -141,6 +159,7 @@ class _AddInfoShopState extends State<AddInfoShop> {
         margin: EdgeInsets.only(top: 16),
         width: 250,
         child: TextField(
+          onChanged: (value) => phone = value.trim(),
           keyboardType: TextInputType.phone,
           decoration: MyStyle().myInputDecoration('เบอร์โทรศัพย์ :'),
         ),
