@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ungrci/models/user_model.dart';
 import 'package:ungrci/page/add_info_shop.dart';
+import 'package:ungrci/page/edit_info_shop.dart';
 import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
 
@@ -50,15 +51,7 @@ class _ShowInfoShopState extends State<ShowInfoShop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          MaterialPageRoute route = MaterialPageRoute(
-            builder: (context) => AddInfoShop(),
-          );
-          Navigator.push(context, route).then((value) => null);
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: status ? addButton(context) : editButton(context) ,
       body: status2
           ? MyStyle().showProgress()
           : status
@@ -66,6 +59,30 @@ class _ShowInfoShopState extends State<ShowInfoShop> {
                   child: MyStyle().showTextH1('ยังไม่มีข้อมูลร้าน'),
                 )
               : showContent(),
+    );
+  }
+
+  FloatingActionButton addButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        MaterialPageRoute route = MaterialPageRoute(
+          builder: (context) => AddInfoShop(),
+        );
+        Navigator.push(context, route).then((value) => null);
+      },
+      child: Icon(Icons.add),
+    );
+  }
+
+  FloatingActionButton editButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        MaterialPageRoute route = MaterialPageRoute(
+          builder: (context) => EditInfoShop(userModel: userModel,),
+        );
+        Navigator.push(context, route).then((value) => null);
+      },
+      child: Icon(Icons.edit),
     );
   }
 
