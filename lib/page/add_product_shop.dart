@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/utility/normal_dialog.dart';
 
 class AddProductShop extends StatefulWidget {
   @override
@@ -11,21 +13,53 @@ class AddProductShop extends StatefulWidget {
 
 class _AddProductShopState extends State<AddProductShop> {
   File file;
+  String pathImage, name, price, detail, nameShop, idShop, code;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    findShop();
+  }
+
+  Future<Null> findShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    idShop = preferences.getString('id');
+    nameShop = preferences.getString('Name');
+    print('idShop = $idShop, nameShop = $nameShop');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (file == null) {
+            normalDialog(context, 'Please Choose Image');
+          } else if (name == null ||
+              name.isEmpty ||
+              price == null ||
+              price.isEmpty ||
+              detail == null ||
+              detail.isEmpty) {
+            normalDialog(context, 'Please Fill Every Blank');
+          } else {}
+        },
+        child: Icon(Icons.cloud_upload),
+      ),
       appBar: AppBar(
         title: Text('Add Product'),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            imageGroup(),
-            nameForm(),
-            priceForm(),
-            detailForm(),
-          ],
+        child: SingleChildScrollView(
+                  child: Column(
+            children: <Widget>[
+              imageGroup(),
+              nameForm(),
+              priceForm(),
+              detailForm(),
+            ],
+          ),
         ),
       ),
     );
@@ -35,6 +69,7 @@ class _AddProductShopState extends State<AddProductShop> {
         width: 250,
         margin: EdgeInsets.only(top: 16),
         child: TextField(
+          onChanged: (value) => name = value.trim(),
           decoration: MyStyle().myInputDecoration('Name Product :'),
         ),
       );
@@ -43,6 +78,8 @@ class _AddProductShopState extends State<AddProductShop> {
         width: 250,
         margin: EdgeInsets.only(top: 16),
         child: TextField(
+          keyboardType: TextInputType.number,
+          onChanged: (value) => price = value.trim(),
           decoration: MyStyle().myInputDecoration('Price Product :'),
         ),
       );
@@ -51,6 +88,7 @@ class _AddProductShopState extends State<AddProductShop> {
         width: 250,
         margin: EdgeInsets.only(top: 16),
         child: TextField(
+          onChanged: (value) => detail = value.trim(),
           decoration: MyStyle().myInputDecoration('Detail Product :'),
         ),
       );
