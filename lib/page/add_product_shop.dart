@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,7 +44,9 @@ class _AddProductShopState extends State<AddProductShop> {
               detail == null ||
               detail.isEmpty) {
             normalDialog(context, 'Please Fill Every Blank');
-          } else {}
+          } else {
+            uploadAndInsertProduct();
+          }
         },
         child: Icon(Icons.cloud_upload),
       ),
@@ -52,7 +55,7 @@ class _AddProductShopState extends State<AddProductShop> {
       ),
       body: Center(
         child: SingleChildScrollView(
-                  child: Column(
+          child: Column(
             children: <Widget>[
               imageGroup(),
               nameForm(),
@@ -126,4 +129,16 @@ class _AddProductShopState extends State<AddProductShop> {
           )
         ],
       );
+
+  Future<Null> uploadAndInsertProduct() async {
+    Random random = Random();
+    int i = random.nextInt(1000000);
+    String nameFile = 'idShop${idShop}product$i.jpg';
+    print('nameFile = $nameFile');
+    code = 'idShop${idShop}code$i';
+    print('code = $code');
+
+    
+
+  }
 }
