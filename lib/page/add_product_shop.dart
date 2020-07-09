@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
 import 'package:ungrci/utility/normal_dialog.dart';
 
@@ -138,7 +140,27 @@ class _AddProductShopState extends State<AddProductShop> {
     code = 'idShop${idShop}code$i';
     print('code = $code');
 
-    
+    try {
+      String urlUpload = '${MyConstant().domain}/RCI/saveFileUng.php';
 
+      Map<String, dynamic> map = Map();
+      map['file'] = await MultipartFile.fromFile(file.path, filename: nameFile);
+      FormData formData = FormData.fromMap(map);
+      await Dio().post(urlUpload, data: formData).then((value) async {
+        pathImage = '/RCI/Product/$nameFile';
+        print(
+            'upload Success => pathImage = ${MyConstant().domain}$pathImage ');
+
+        String urlInsert =
+            'https://6ca748081031.ngrok.io/RCI/addProductUng.php?isAdd=true&IdShop=$idShop&NameShop=$nameShop&Name=$name&Price=$price&Detail=$detail&PathImage=$pathImage&Code=$code';
+        await Dio().get(urlInsert).then((value) {
+          if (value.toString() == 'true') {
+            Navigator.pop(context);
+          } else {
+            normalDialog(context, 'Please Try Agains');
+          }
+        });
+      });
+    } catch (e) {}
   }
 }
