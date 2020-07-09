@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ungrci/models/user_model.dart';
+import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
 
 class EditInfoShop extends StatefulWidget {
@@ -14,17 +15,21 @@ class EditInfoShop extends StatefulWidget {
 class _EditInfoShopState extends State<EditInfoShop> {
   UserModel userModel;
   String dateTimeString, gender, educateString, address, phone, id;
+  List<String> educates;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     userModel = widget.userModel;
     gender = userModel.gendel;
     educateString = userModel.education;
     address = userModel.address;
     phone = userModel.phone;
     id = userModel.id;
+
+    educates = MyConstant().educates;
 
     findCurrentTime();
   }
@@ -49,14 +54,35 @@ class _EditInfoShopState extends State<EditInfoShop> {
             addressForm(),
             phoneForm(),
             genderGroup(),
+            educationDropdown(),
           ],
         ),
       ),
     );
   }
 
+  Container educationDropdown() => Container(width: 250,
+        child: DropdownButton<String>(
+          value: educateString,
+          items: educates
+              .map(
+                (e) => DropdownMenuItem(
+                  child: Text(e),
+                  value: e,
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              educateString = value;
+            });
+          },
+        ),
+      );
+
   Container genderGroup() => Container(
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             mailRadio(),
             feMaleRadio(),
