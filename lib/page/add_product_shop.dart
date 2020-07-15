@@ -152,7 +152,7 @@ class _AddProductShopState extends State<AddProductShop> {
             'upload Success => pathImage = ${MyConstant().domain}$pathImage ');
 
         String urlInsert =
-            'https://6ca748081031.ngrok.io/RCI/addProductUng.php?isAdd=true&IdShop=$idShop&NameShop=$nameShop&Name=$name&Price=$price&Detail=$detail&PathImage=$pathImage&Code=$code';
+            '${MyConstant().domain}/RCI/addProductUng.php?isAdd=true&IdShop=$idShop&NameShop=$nameShop&Name=$name&Price=$price&Detail=$detail&PathImage=$pathImage&Code=$code';
         await Dio().get(urlInsert).then((value) {
           if (value.toString() == 'true') {
             Navigator.pop(context);
