@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/user_model.dart';
+import 'package:ungrci/page/show_cart.dart';
 import 'package:ungrci/page/show_menu_shop.dart';
 import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
@@ -78,7 +79,20 @@ class _MainUserState extends State<MainUser> {
   }
 
   ListTile buildCart() => ListTile(
-        leading: Icon(Icons.add_shopping_cart, size: 36,color: Colors.pink,),
+        onTap: () {
+          Navigator.pop(context);
+          MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => ShowCart(),
+          );
+          Navigator.push(context, route);
+        },
+        leading: Icon(
+          Icons.add_shopping_cart,
+          size: 36,
+          color: Colors.pink,
+        ),
+        title: Text('ตะกร้า ขอบฉัน'),
+        subtitle: Text('แสดงสินค้าที่เราจะ Order'),
       );
 
   UserAccountsDrawerHeader showHead() {
