@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/sqlite_model.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/utility/normal_toast.dart';
 import 'package:ungrci/utility/sqlite_helper.dart';
 
 class ShowCart extends StatefulWidget {
@@ -10,6 +12,7 @@ class ShowCart extends StatefulWidget {
 
 class _ShowCartState extends State<ShowCart> {
   List<SqliteModel> sqliteModels = List();
+  int total = 0;
 
   @override
   void initState() {
@@ -23,12 +26,24 @@ class _ShowCartState extends State<ShowCart> {
 
     setState(() {
       sqliteModels = object;
+      calculateTotal();
     });
+  }
+
+  void calculateTotal() {
+    total = 0;
+    for (var model in sqliteModels) {
+      int sumInt = int.parse(model.sumString.trim());
+      setState(() {
+        total = total + sumInt;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: buildClearButton(),
       appBar: AppBar(
         title: Text('ตะกร้าของฉัน'),
       ),
@@ -37,31 +52,93 @@ class _ShowCartState extends State<ShowCart> {
               child: Text('ตะกร้าว่างเปล่า ?'),
             )
           : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
                 children: <Widget>[
                   buildNameShop(),
                   buildHeadTitle(),
                   buildListView(),
                   Divider(),
-                  buildTotal()
+                  buildTotal(),
+                  buildOrderButton()
                 ],
               ),
+            ),
+    );
+  }
+
+  Widget buildOrderButton() => Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            width: 150,
+            child: RaisedButton.icon(
+              onPressed: () {
+                insertOrderToMSsql();
+              },
+              icon: Icon(Icons.fastfood),
+              label: Text('Order'),
+            ),
           ),
+        ],
+      );
+
+  FloatingActionButton buildClearButton() {
+    return FloatingActionButton(
+      child: Text('Clear'),
+      onPressed: () async {
+        showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: Text('คุณต้องการลบ รายการทั้งหมด จริงๆ หรือ ?'),
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await SQLiteHelper().clearData().then((value) {
+                        readSQLite();
+                      });
+                    },
+                    child: Text(
+                      'Clear',
+                      style: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget buildTotal() => Row(
         children: <Widget>[
-          Expanded(flex: 6,
-            child: Row(mainAxisAlignment: MainAxisAlignment.end,
+          Expanded(
+            flex: 6,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Text('ผลรวมทั้งหมด : '),
               ],
             ),
           ),
-          Expanded(flex: 1,
-            child: MyStyle().showTextH3Red('XXX'),
+          Expanded(
+            flex: 1,
+            child: MyStyle().showTextH3Red('$total'),
           )
         ],
       );
@@ -74,7 +151,7 @@ class _ShowCartState extends State<ShowCart> {
         child: Row(
           children: <Widget>[
             Expanded(
-              flex: 4,
+              flex: 3,
               child: MyStyle().showTextH3('รายการอาหาร'),
             ),
             Expanded(
@@ -88,6 +165,10 @@ class _ShowCartState extends State<ShowCart> {
             Expanded(
               flex: 1,
               child: MyStyle().showTextH3('รวม'),
+            ),
+            Expanded(
+              flex: 1,
+              child: SizedBox(),
             ),
           ],
         ),
@@ -108,7 +189,7 @@ class _ShowCartState extends State<ShowCart> {
         itemBuilder: (context, index) => Row(
           children: <Widget>[
             Expanded(
-              flex: 4,
+              flex: 3,
               child: Text(sqliteModels[index].nameProduct),
             ),
             Expanded(
@@ -123,7 +204,106 @@ class _ShowCartState extends State<ShowCart> {
               flex: 1,
               child: Text(sqliteModels[index].sumString),
             ),
+            Expanded(
+              flex: 1,
+              child: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  confirmDelert(index);
+                },
+              ),
+            ),
           ],
         ),
       );
+
+  Future<Null> confirmDelert(int index) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(
+            'คุณต้องการลบรายการ ${sqliteModels[index].nameProduct} จริงๆ หรือ ?'),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              FlatButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  int idProductInt = sqliteModels[index].id;
+                  await SQLiteHelper()
+                      .deleteDataWhereId(idProductInt)
+                      .then((value) {
+                    normalToast(
+                        'Delete รายการ ${sqliteModels[index].nameProduct} เรียบร้อยแล้ว');
+                    readSQLite();
+                  });
+                },
+                child: Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.green),
+                ),
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<Null> insertOrderToMSsql() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String idUser = preferences.getString('id');
+    String nameUser = preferences.getString('Name');
+    print('idUser = $idUser, nameUser = $nameUser');
+
+    DateTime dateTime = DateTime.now();
+    String dateTimeString = dateTime.toString();
+    print('dateTime = $dateTimeString');
+
+    String idShop = sqliteModels[0].idShop;
+    String nameShop = sqliteModels[0].nameShop;
+    print('idShop = $idShop, nameShop = $nameShop');
+
+    List<String> idProducts = List();
+    List<String> nameProducts = List();
+    List<String> prices = List();
+    List<String> amounts = List();
+    List<String> sums = List();
+    for (var model in sqliteModels) {
+
+      String idProduct = model.idProduct;
+      String nameProduct = model.nameProduct;
+      String price = model.price;
+      String amount = model.amountString;
+      String sum = model.sumString;
+
+      idProducts.add(idProduct);
+      nameProducts.add(nameProduct);
+      prices.add(price);
+      amounts.add(amount);
+      sums.add(sum);
+    }
+
+    String idProductString = idProducts.toString();
+    String nameProductString = nameProducts.toString();
+    String priceString = prices.toString();
+    String amountString = amounts.toString();
+    String sumString = sums.toString();
+
+    print('idProductString = $idProductString');
+    print('nameProductString = $nameProductString');
+    print('priceString = $priceString');
+    print('amountString = $amountString');
+    print('sumString = $sumString');
+  }
 }
