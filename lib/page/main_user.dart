@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/user_model.dart';
 import 'package:ungrci/page/show_menu_shop.dart';
 import 'package:ungrci/utility/my_constant.dart';
@@ -15,12 +16,19 @@ class MainUser extends StatefulWidget {
 class _MainUserState extends State<MainUser> {
   List<UserModel> userModels = List();
   List<Widget> widgets = List();
+  String nameLogin;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     readShop();
+    findNameLogin();
+  }
+
+  Future<Null> findNameLogin() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    nameLogin = preferences.getString('Name');
   }
 
   Future<Null> readShop() async {
@@ -50,12 +58,40 @@ class _MainUserState extends State<MainUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: MyStyle().menuSignOut(context),
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                showHead(),
+                buildCart(),
+              ],
+            ),
+            MyStyle().menuSignOut(context),
+          ],
+        ),
       ),
       appBar: AppBar(
         title: Text('Welcome User'),
       ),
       body: userModels.length == 0 ? MyStyle().showProgress() : buildShop(),
+    );
+  }
+
+  ListTile buildCart() => ListTile(
+        leading: Icon(Icons.add_shopping_cart, size: 36,color: Colors.pink,),
+      );
+
+  UserAccountsDrawerHeader showHead() {
+    return UserAccountsDrawerHeader(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/wall.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      currentAccountPicture: Image.asset('images/logo.png'),
+      accountName: Text(nameLogin == null ? 'Name ?' : nameLogin),
+      accountEmail: Text('Login'),
     );
   }
 
