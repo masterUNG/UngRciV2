@@ -72,6 +72,28 @@ class MyStyle {
         ),
       );
 
+  Widget showTextH3(String string) => Container(
+        child: Text(
+          string,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: darkColor,
+          ),
+        ),
+      );
+
+      Widget showTextH3Red(String string) => Container(
+        child: Text(
+          string,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.red.shade900,
+          ),
+        ),
+      );
+
   Container showLogo() {
     return Container(
       width: 150,
