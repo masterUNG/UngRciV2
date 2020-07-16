@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ungrci/models/product_model.dart';
+import 'package:ungrci/models/sqlite_model.dart';
 import 'package:ungrci/models/user_model.dart';
 import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/utility/normal_dialog.dart';
+import 'package:ungrci/utility/normal_toast.dart';
+import 'package:ungrci/utility/sqlite_helper.dart';
 
 class ShowMenuShop extends StatefulWidget {
   final UserModel userModel;
@@ -132,7 +136,6 @@ class _ShowMenuShopState extends State<ShowMenuShop> {
                       amount++;
                     });
                     print('amount = $amount');
-                    
                   },
                 ),
                 Text('$amount'),
@@ -200,7 +203,35 @@ class _ShowMenuShopState extends State<ShowMenuShop> {
     print(
         'nameProduct = $nameProduct, amountString = $amountSting, sumString = $sumString');
 
+    Map<String, dynamic> map = Map();
+    map['idShop'] = idShop;
+    map['nameShop'] = nameShop;
+    map['idProduct'] = idProduct;
+    map['nameProduct'] = nameProduct;
+    map['price'] = price;
+    map['amountString'] = amountSting;
+    map['sumString'] = sumString;
 
+    SqliteModel sqliteModel = SqliteModel.fromJson(map);
 
+    List<SqliteModel> resultFromSQLite =
+        await SQLiteHelper().readDataFromSQLite();
+    print('resutlFromSQLite length ==>> ${resultFromSQLite.length}');
+
+    if (resultFromSQLite.length == 0) {
+      await SQLiteHelper().insertDataToSQLite(sqliteModel).then((value) {
+        normalToast('Add Order Success');
+      });
+    } else {
+      String currentIdShop = resultFromSQLite[0].idShop;
+      print('currentIdShop ==>> $currentIdShop');
+      if (idShop == currentIdShop) {
+        await SQLiteHelper().insertDataToSQLite(sqliteModel).then((value) {
+          normalToast('Add Order Success');
+        });
+      } else {
+        normalDialog(context, 'ตระกล้าคุณอยู่อีกร้าน กรุณาซื้อจากร้าน ${resultFromSQLite[0].nameShop} คะ');
+      }
+    }
   }
 }
