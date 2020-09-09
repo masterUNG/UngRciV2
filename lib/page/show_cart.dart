@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/sqlite_model.dart';
+import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/utility/normal_dialog.dart';
 import 'package:ungrci/utility/normal_toast.dart';
 import 'package:ungrci/utility/sqlite_helper.dart';
+import 'package:intl/intl.dart';
 
 class ShowCart extends StatefulWidget {
   @override
@@ -267,7 +271,8 @@ class _ShowCartState extends State<ShowCart> {
     print('idUser = $idUser, nameUser = $nameUser');
 
     DateTime dateTime = DateTime.now();
-    String dateTimeString = dateTime.toString();
+
+    String dateTimeString = DateFormat('dd-MM-yyyy').format(dateTime);
     print('dateTime = $dateTimeString');
 
     String idShop = sqliteModels[0].idShop;
@@ -280,7 +285,6 @@ class _ShowCartState extends State<ShowCart> {
     List<String> amounts = List();
     List<String> sums = List();
     for (var model in sqliteModels) {
-
       String idProduct = model.idProduct;
       String nameProduct = model.nameProduct;
       String price = model.price;
@@ -305,5 +309,19 @@ class _ShowCartState extends State<ShowCart> {
     print('priceString = $priceString');
     print('amountString = $amountString');
     print('sumString = $sumString');
+
+    String urlMsSQL =
+        '${MyConstant().domain}/RCI/insert_order_ung.php?isAdd=true&idUser=$idUser&nameUser=$nameUser&dateTimeOrder=$dateTimeString&idShop=$idShop&nameShop=$nameShop&idProduct=$idProductString&nameProduct=$nameProductString&price=$priceString&amount=$amountString&sum=$sumString';
+
+    print('urlMsSQL ==>> $urlMsSQL');
+    await Dio().get(urlMsSQL).then((value) async{
+      print('value ==>> $value');
+      if (value.toString() == 'true') {
+        normalToast('Order to Server Success');
+        await SQLiteHelper().clearData().then((value) => Navigator.pop(context));
+      } else {
+        normalDialog(context, 'Have Problum Please Try again');
+      }
+    });
   }
 }
