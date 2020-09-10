@@ -8,6 +8,7 @@ import 'package:ungrci/page/show_cart.dart';
 import 'package:ungrci/page/show_menu_shop.dart';
 import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/widget/read_bar_code.dart';
 
 class MainUser extends StatefulWidget {
   @override
@@ -65,13 +66,15 @@ class _MainUserState extends State<MainUser> {
               children: <Widget>[
                 showHead(),
                 buildCart(),
+                buildReadBarCode(),
               ],
             ),
             MyStyle().menuSignOut(context),
           ],
         ),
       ),
-      appBar: AppBar(actions: <Widget>[MyStyle().showChart(context)],
+      appBar: AppBar(
+        actions: <Widget>[MyStyle().showChart(context)],
         title: Text('Welcome User'),
       ),
       body: userModels.length == 0 ? MyStyle().showProgress() : buildShop(),
@@ -93,6 +96,25 @@ class _MainUserState extends State<MainUser> {
         ),
         title: Text('ตะกร้า ขอบฉัน'),
         subtitle: Text('แสดงสินค้าที่เราจะ Order'),
+      );
+
+  ListTile buildReadBarCode() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReadBarCode(),
+            ),
+          );
+        },
+        leading: Icon(
+          Icons.android,
+          size: 36,
+          color: Colors.green,
+        ),
+        title: Text('Read Bar Code'),
+        subtitle: Text('อ่าน Bar Code'),
       );
 
   UserAccountsDrawerHeader showHead() {
