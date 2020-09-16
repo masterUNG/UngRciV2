@@ -19,6 +19,7 @@ class MyAPI {
     String url =
         '${MyConstant().domain}/RCI/editUserWhereIdUng.php?id=$id&isAdd=true&CreateDate=$dateTimeString&Address=$address&Phone=$phone&Gendel=$gender&Education=$educateString';
 
+    print('url Authen ==> $url');
     await Dio().get(url).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);
@@ -31,6 +32,9 @@ class MyAPI {
   Future<UserModel> getUserWhereUser(String user) async {
     String url =
         '${MyConstant().domain}/RCI/getUserWhereUserUng.php?isAdd=true&User=$user';
+
+    print('url getUserWhereUser ==>> $url');
+
     Response response = await Dio().get(url);
     print('res = $response');
     if (response.toString() == 'null') {

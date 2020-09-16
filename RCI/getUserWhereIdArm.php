@@ -1,5 +1,5 @@
 <?php
-include "connected.php"
+include "connected.php";
 
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;

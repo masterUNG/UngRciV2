@@ -9,6 +9,8 @@ import 'package:ungrci/page/show_menu_shop.dart';
 import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
 import 'package:ungrci/widget/read_bar_code.dart';
+import 'package:ungrci/widget/show_chart.dart';
+import 'package:ungrci/widget/show_location.dart';
 
 class MainUser extends StatefulWidget {
   @override
@@ -19,6 +21,7 @@ class _MainUserState extends State<MainUser> {
   List<UserModel> userModels = List();
   List<Widget> widgets = List();
   String nameLogin;
+  Widget currentWidget = ShowChart();
 
   @override
   void initState() {
@@ -65,6 +68,8 @@ class _MainUserState extends State<MainUser> {
             Column(
               children: <Widget>[
                 showHead(),
+                buildShowChart(),
+                buildShowLocaion(),
                 buildCart(),
                 buildReadBarCode(),
               ],
@@ -77,9 +82,42 @@ class _MainUserState extends State<MainUser> {
         actions: <Widget>[MyStyle().showChart(context)],
         title: Text('Welcome User'),
       ),
-      body: userModels.length == 0 ? MyStyle().showProgress() : buildShop(),
+      body: currentWidget,
+      // body: userModels.length == 0 ? MyStyle().showProgress() : buildShop(),
     );
   }
+
+  ListTile buildShowChart() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentWidget = ShowChart();
+          });
+        },
+        leading: Icon(
+          Icons.graphic_eq,
+          size: 36,
+          color: Colors.blue,
+        ),
+        title: Text('แสดงกราฟ'),
+        subtitle: Text('Demo Show Chart'),
+      );
+
+  ListTile buildShowLocaion() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentWidget = ShowLocation();
+          });
+        },
+        leading: Icon(
+          Icons.map,
+          size: 36,
+          color: Colors.brown,
+        ),
+        title: Text('แสดงพิกัด'),
+        subtitle: Text('Show All User Location'),
+      );
 
   ListTile buildCart() => ListTile(
         onTap: () {
