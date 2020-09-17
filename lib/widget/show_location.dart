@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/location_model.dart';
 import 'package:ungrci/utility/my_constant.dart';
@@ -16,13 +17,14 @@ class ShowLocation extends StatefulWidget {
 
 class _ShowLocationState extends State<ShowLocation> {
   bool statusClick = true;
-  double lat = 13.646736, lng = 100.320284;
+  double lat, lng;
   List<LocationModel> locationModels = List();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    findLatLng();
     readAllLocation();
   }
 
@@ -55,14 +57,14 @@ class _ShowLocationState extends State<ShowLocation> {
       ),
       body: locationModels.length == 0
           ? MyStyle().showProgress()
-          : buildShowMap(),
+          : lat == null ? MyStyle().showProgress() : buildShowMap(),
     );
   }
 
   Marker currentMarker() {
     return Marker(
       markerId: MarkerId('currentId'),
-      position: LatLng(13.646736, 100.320284),
+      position: LatLng(lat, lng),
       infoWindow:
           InfoWindow(title: 'คุณอยู่ที่นี่', snippet: 'ตำแหน่งปัจจุบันของคุณ'),
     );
@@ -71,9 +73,12 @@ class _ShowLocationState extends State<ShowLocation> {
   Set<Marker> setMarkers() {
     List<Marker> myMarker = List();
     int index = 0;
-    double colorHue = 60.0;
+    double colorHue = 10.0;
     for (var model in locationModels) {
-      colorHue = colorHue + index * 10;
+      colorHue = colorHue + index * 5;
+      if (colorHue >= 360) {
+        colorHue = 10;
+      }
       Marker marker = Marker(
           markerId: MarkerId('id$index'),
           position: LatLng(
@@ -90,7 +95,7 @@ class _ShowLocationState extends State<ShowLocation> {
   }
 
   Widget buildShowMap() {
-    LatLng latLng = LatLng(13.646736, 100.320284);
+    LatLng latLng = LatLng(lat, lng);
     CameraPosition cameraPosition = CameraPosition(
       target: latLng,
       zoom: 16,
@@ -131,5 +136,24 @@ class _ShowLocationState extends State<ShowLocation> {
         });
       }
     });
+  }
+
+  Future<Null> findLatLng() async {
+    LocationData locationData = await findLocation();
+    setState(() {
+      lat = locationData.latitude;
+      lng = locationData.longitude;
+      print('lat ==>> $lat, lng ==>> $lng');
+    });
+  }
+
+  Future<LocationData> findLocation() async {
+    Location location = Location();
+    try {
+      return await location.getLocation();
+    } catch (e) {
+      return null;
+      print('e Location ===>> ${e.toString()}');
+    }
   }
 }

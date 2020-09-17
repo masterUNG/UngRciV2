@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/user_model.dart';
 import 'package:ungrci/page/main_shop.dart';
 import 'package:ungrci/page/main_user.dart';
+import 'package:ungrci/page/no_internet.dart';
 import 'package:ungrci/page/register.dart';
 import 'package:ungrci/utility/my_api.dart';
+import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
 import 'package:ungrci/utility/normal_dialog.dart';
 
@@ -21,7 +25,7 @@ class _AuthenState extends State<Authen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    findLogin();
+    checkInternet();
   }
 
   Future<Null> findLogin() async {
@@ -162,5 +166,21 @@ class _AuthenState extends State<Authen> {
       builder: (context) => widget,
     );
     Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
+
+  Future<Null> checkInternet() async {
+    try {
+      var response = await InternetAddress.lookup('google.com');
+      if ((response.isNotEmpty) && (response[0].rawAddress.isNotEmpty)) {
+        findLogin();
+      }
+    } catch (e) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternet(),
+          ),
+          (route) => false);
+    }
   }
 }

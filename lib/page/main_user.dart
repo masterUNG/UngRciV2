@@ -8,6 +8,8 @@ import 'package:ungrci/page/show_cart.dart';
 import 'package:ungrci/page/show_menu_shop.dart';
 import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
+import 'package:ungrci/widget/download_file.dart';
+import 'package:ungrci/widget/generate_qrcode.dart';
 import 'package:ungrci/widget/read_bar_code.dart';
 import 'package:ungrci/widget/show_chart.dart';
 import 'package:ungrci/widget/show_location.dart';
@@ -63,17 +65,19 @@ class _MainUserState extends State<MainUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: Stack(
+        child: ListView(
           children: <Widget>[
             Column(
-              children: <Widget>[
-                showHead(),
-                buildShowChart(),
-                buildShowLocaion(),
-                buildCart(),
-                buildReadBarCode(),
-              ],
-            ),
+                children: <Widget>[
+                  showHead(),
+                  buildShowChart(),
+                  buildShowLocaion(),
+                  buildShowDownloadFile(),
+                  buildShowGenQRcode(),
+                  buildCart(),
+                  buildReadBarCode(),
+                ],
+              ),
             MyStyle().menuSignOut(context),
           ],
         ),
@@ -117,6 +121,38 @@ class _MainUserState extends State<MainUser> {
         ),
         title: Text('แสดงพิกัด'),
         subtitle: Text('Show All User Location'),
+      );
+
+      ListTile buildShowDownloadFile() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentWidget = DownloadFile();
+          });
+        },
+        leading: Icon(
+          Icons.cloud_download,
+          size: 36,
+          color: Colors.pink,
+        ),
+        title: Text('Download File'),
+        subtitle: Text('Show All Flie Download'),
+      );
+
+      ListTile buildShowGenQRcode() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentWidget = GenerateQRcode();
+          });
+        },
+        leading: Icon(
+          Icons.crop_landscape,
+          size: 36,
+          color: Colors.orange.shade800,
+        ),
+        title: Text('Generate QR code'),
+        subtitle: Text('สร้าง QR code'),
       );
 
   ListTile buildCart() => ListTile(
