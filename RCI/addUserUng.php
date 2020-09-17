@@ -23,7 +23,7 @@ if (isset($_GET)) {
 		$Password = $_GET['Password'];
 		$Type = $_GET['Type'];
 							
-		$sql = "INSERT INTO `userUNG`(`id`, `Type`, `Name`, `User`, `Password`, `CreateDate`, `Address`, `Phone`, `Gendel`, `Education`) VALUES (Null,'$Type','$Name','$User','$Password','$CreateDate','','','','')";
+		$sql = "INSERT INTO `userung`(`id`, `Type`, `Name`, `User`, `Password`, `CreateDate`, `Address`, `Phone`, `Gendel`, `Education`) VALUES (Null,'$Type','$Name','$User','$Password','$CreateDate','','','','')";
 
 		$result = mysqli_query($link, $sql);
 

@@ -22,7 +22,7 @@ if (isset($_GET)) {
 				
 		$User = $_GET['User'];
 
-		$result = mysqli_query($link, "SELECT * FROM userUNG WHERE User = '$User'");
+		$result = mysqli_query($link, "SELECT * FROM userung WHERE User = '$User'");
 
 		if ($result) {
 

@@ -1,8 +1,6 @@
 <?php
-header("content-type:text/javascript;charset=utf-8");
-error_reporting(0);
-error_reporting(E_ERROR | E_PARSE);
-$link = mysqli_connect('localhost', 'student1', 'Abc12345', "rci");
+
+include 'connected.php';
 
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
@@ -21,11 +19,11 @@ if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
 		$Name = $_GET['Name'];
-		$User = $_GET['User'];
-		$Password = $_GET['Password'];
-		$Type = $_GET['Type'];
+		$DateTime = $_GET['DateTime'];
+		$Lat = $_GET['Lat'];
+		$Lng = $_GET['Lng'];
 							
-		$sql = "INSERT INTO `userung`(`id`, `Type`, `Name`, `User`, `Password`, `CreateDate`, `Address`, `Phone`, `Gendel`, `Education`) VALUES (Null,'$Type','$Name','$User','$Password','$CreateDate','','','','')";
+		$sql = "INSERT INTO `location`(`id`, `Name`, `DateTime`, `Lat`, `Lng`) VALUES (Null,'$Name','$DateTime','$Lat','$Lng')";
 
 		$result = mysqli_query($link, $sql);
 

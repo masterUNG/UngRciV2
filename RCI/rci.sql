@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 09, 2020 at 07:51 AM
--- Server version: 10.4.13-MariaDB
--- PHP Version: 7.4.7
+-- Host: localhost
+-- Generation Time: Sep 17, 2020 at 03:51 PM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -20,6 +21,62 @@ SET time_zone = "+00:00";
 --
 -- Database: `rci`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `location`
+--
+
+CREATE TABLE `location` (
+  `id` int(11) NOT NULL,
+  `Name` text COLLATE utf8_unicode_ci NOT NULL,
+  `DateTime` text COLLATE utf8_unicode_ci NOT NULL,
+  `Lat` text COLLATE utf8_unicode_ci NOT NULL,
+  `Lng` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `location`
+--
+
+INSERT INTO `location` (`id`, `Name`, `DateTime`, `Lat`, `Lng`) VALUES
+(3, 'ฉัตรชัย', '16-09-2020 14:55', '13.785491', '100.573439'),
+(4, 'อึ่ง ผู้ซื้อ', '16-09-2020 14:58', '13.647603', '100.320767'),
+(6, 'อึ่ง ผู้ซื้อ', '16-09-2020 15:01', '13.646736', '100.320284'),
+(7, 'มนัส', '16-09-2020 15:01', '13.646697', '100.31981'),
+(9, 'armuser', '16-09-2020 15:01', '13.647603', '100.320767'),
+(10, 'อึ่ง ผู้ซื้อ', '16-09-2020 15:03', '13.647615', '100.320808'),
+(11, 'armuser', '16-09-2020 15:25', '13.647603', '100.320767'),
+(12, 'อึ่ง ผู้ซื้อ', '16-09-2020 15:45', '13.647615', '100.320808'),
+(13, 'armuser', '17-09-2020 09:53', '13.6476174', '100.3200695'),
+(14, 'อึ่ง ผู้ซื้อ', '17-09-2020 11:32', '13.6476114', '100.3200879');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sales`
+--
+
+CREATE TABLE `sales` (
+  `id` int(11) NOT NULL,
+  `xvalue` text NOT NULL,
+  `yvalue` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sales`
+--
+
+INSERT INTO `sales` (`id`, `xvalue`, `yvalue`) VALUES
+(1, '0', '15'),
+(2, '10', '25'),
+(3, '20', '36'),
+(4, '30', '25'),
+(5, '40', '50'),
+(6, '50', '100'),
+(7, '60', '75'),
+(8, '70', '30');
 
 -- --------------------------------------------------------
 
@@ -69,6 +126,18 @@ INSERT INTO `userung` (`id`, `Type`, `Name`, `User`, `Password`, `CreateDate`, `
 --
 
 --
+-- Indexes for table `location`
+--
+ALTER TABLE `location`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sales`
+--
+ALTER TABLE `sales`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `userung`
 --
 ALTER TABLE `userung`
@@ -77,6 +146,18 @@ ALTER TABLE `userung`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `location`
+--
+ALTER TABLE `location`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `sales`
+--
+ALTER TABLE `sales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `userung`
