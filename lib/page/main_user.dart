@@ -23,7 +23,7 @@ class _MainUserState extends State<MainUser> {
   List<UserModel> userModels = List();
   List<Widget> widgets = List();
   String nameLogin;
-  Widget currentWidget = ShowChart();
+  Widget currentWidget;
 
   @override
   void initState() {
@@ -31,6 +31,7 @@ class _MainUserState extends State<MainUser> {
     super.initState();
     readShop();
     findNameLogin();
+    currentWidget = buildShop();
   }
 
   Future<Null> findNameLogin() async {
@@ -68,16 +69,17 @@ class _MainUserState extends State<MainUser> {
         child: ListView(
           children: <Widget>[
             Column(
-                children: <Widget>[
-                  showHead(),
-                  buildShowChart(),
-                  buildShowLocaion(),
-                  buildShowDownloadFile(),
-                  buildShowGenQRcode(),
-                  buildCart(),
-                  buildReadBarCode(),
-                ],
-              ),
+              children: <Widget>[
+                showHead(),
+                buildShowShop(),
+                buildShowChart(),
+                buildShowLocaion(),
+                buildShowDownloadFile(),
+                buildShowGenQRcode(),
+                buildCart(),
+                buildReadBarCode(),
+              ],
+            ),
             MyStyle().menuSignOut(context),
           ],
         ),
@@ -86,10 +88,26 @@ class _MainUserState extends State<MainUser> {
         actions: <Widget>[MyStyle().showChart(context)],
         title: Text('Welcome User'),
       ),
-      body: currentWidget,
-      // body: userModels.length == 0 ? MyStyle().showProgress() : buildShop(),
+      // body: currentWidget,
+      body: userModels.length == 0 ? MyStyle().showProgress() : currentWidget,
     );
   }
+
+  ListTile buildShowShop() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentWidget = buildShop();
+          });
+        },
+        leading: Icon(
+          Icons.home,
+          size: 36,
+          color: Colors.orange,
+        ),
+        title: Text('แสดง ร้านค้า'),
+        subtitle: Text('Shop All Shop'),
+      );
 
   ListTile buildShowChart() => ListTile(
         onTap: () {
@@ -123,7 +141,7 @@ class _MainUserState extends State<MainUser> {
         subtitle: Text('Show All User Location'),
       );
 
-      ListTile buildShowDownloadFile() => ListTile(
+  ListTile buildShowDownloadFile() => ListTile(
         onTap: () {
           Navigator.pop(context);
           setState(() {
@@ -139,7 +157,7 @@ class _MainUserState extends State<MainUser> {
         subtitle: Text('Show All Flie Download'),
       );
 
-      ListTile buildShowGenQRcode() => ListTile(
+  ListTile buildShowGenQRcode() => ListTile(
         onTap: () {
           Navigator.pop(context);
           setState(() {
