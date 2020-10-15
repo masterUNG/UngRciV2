@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ungrci/models/user_model.dart';
@@ -8,7 +9,6 @@ import 'package:ungrci/page/main_user.dart';
 import 'package:ungrci/page/no_internet.dart';
 import 'package:ungrci/page/register.dart';
 import 'package:ungrci/utility/my_api.dart';
-import 'package:ungrci/utility/my_constant.dart';
 import 'package:ungrci/utility/my_style.dart';
 import 'package:ungrci/utility/normal_dialog.dart';
 
@@ -26,6 +26,12 @@ class _AuthenState extends State<Authen> {
     // TODO: implement initState
     super.initState();
     checkInternet();
+  }
+
+  Future<Null> findToken() async {
+    await FirebaseMessaging().getToken().then((value) {
+      print('token ==>> $value');
+    });
   }
 
   Future<Null> findLogin() async {
@@ -60,23 +66,33 @@ class _AuthenState extends State<Authen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: status
-          ? MyStyle().showProgress()
-          : Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    MyStyle().showLogo(),
-                    MyStyle().showTextH1('Ung Rci'),
-                    userForm(),
-                    passwordForm(),
-                    loginButton(),
-                    registerButton(),
-                  ],
-                ),
-              ),
-            ),
+      body: status ? MyStyle().showProgress() : buildCenter(),
+    );
+  }
+
+  Widget buildCenter() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+            colors: [Colors.white, Colors.lime.shade700],
+            radius: 1,
+            center: Alignment(0, -0.3)),
+      ),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              MyStyle().showLogo(),
+              MyStyle().showTextH1('Ung Rci'),
+              userForm(),
+              passwordForm(),
+              loginButton(),
+              registerButton(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -84,6 +100,7 @@ class _AuthenState extends State<Authen> {
     return Container(
       width: 250,
       child: RaisedButton(
+        color: Colors.blue.shade700,
         onPressed: () {
           if (user == null ||
               user.isEmpty ||
@@ -94,7 +111,10 @@ class _AuthenState extends State<Authen> {
             checkAuthen();
           }
         },
-        child: Text('Login'),
+        child: Text(
+          'Login',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -172,6 +192,7 @@ class _AuthenState extends State<Authen> {
     try {
       var response = await InternetAddress.lookup('google.com');
       if ((response.isNotEmpty) && (response[0].rawAddress.isNotEmpty)) {
+        findToken();
         findLogin();
       }
     } catch (e) {

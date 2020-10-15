@@ -23,6 +23,8 @@ class _ShowChartState extends State<ShowChart> {
   List<SalesPerProduct> listSalesPerProducts = List();
   List<Series> listSeries = List();
 
+  
+
   @override
   void initState() {
     // TODO: implement initState

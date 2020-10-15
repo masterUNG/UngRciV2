@@ -7,6 +7,11 @@ class MyStyle {
   Color mainColor = Colors.pink;
   Color darkColor = Colors.blue.shade800;
 
+  Widget mySizeBox() => SizedBox(
+        height: 16,
+        width: 16,
+      );
+
   Widget showChart(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.add_shopping_cart),
